@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+*{
+    font-family: 'Inter', 'sans-serif';
+}
+
+:root {
+  --primary: #7c1469;
+  --primary-dark: #5e0f50;
+  --primary-light: #a83791;
+  --secondary: #ffffff;
+  --neutral: #f5f5f5;
+  --accent: #ffb6e6;
+}
