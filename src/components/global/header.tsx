@@ -2,7 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import elockPurpleText from '../../../public/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
-export default function Header() {
+interface HeaderProps {
+    setLoginModalOpen: (open: boolean) => void;
+}
+
+export default function Header({ setLoginModalOpen }: HeaderProps) {
     const navigate = useNavigate();
 
     return (
@@ -14,7 +18,10 @@ export default function Header() {
                 onClick={() => { navigate('/') }}
                 className='cursor-pointer'
             />
-            <button className="flex text-lg items-center gap-2 cursor-pointer hover:bg-[var(--accent)] px-5 py-2 transition-colors rounded-full">
+            <button
+                className="flex text-lg items-center gap-2 cursor-pointer hover:bg-[var(--accent)] px-5 py-2 transition-colors rounded-full"
+                onClick={() => setLoginModalOpen(true)}
+            >
                 <PersonOutlineOutlinedIcon />
                 <p>Criar conta</p>
             </button>
