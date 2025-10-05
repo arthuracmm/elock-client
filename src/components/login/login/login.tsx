@@ -4,13 +4,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import { jwtDecode } from 'jwt-decode';
-import elockPurpleText from '../../../../public/images/elock-texto.png'
-import WelcomeSVG from '../../../../public/svgs/welcome.svg'
-import LoginSVG from '../../../../public/svgs/login.svg'
+import elockPurpleText from '/images/elock-texto.png'
+import WelcomeSVG from '/svgs/welcome.svg'
+import LoginSVG from '/svgs/login.svg'
 
 interface LoginModalProps {
     open: boolean;
     handleClose: () => void;
+    onLoginSuccess?: (userData: any) => void;
 }
 
 interface JWTPayload {
@@ -21,7 +22,7 @@ interface JWTPayload {
     exp: number;
 }
 
-export default function LoginModal({ open, handleClose }: LoginModalProps) {
+export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginModalProps) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -51,9 +52,15 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
 
             localStorage.setItem('userData', JSON.stringify(userData));
 
+            if (onLoginSuccess) {
+                onLoginSuccess(userData);
+            }
+
+
             handleClose();
             setEmail('');
             setPassword('');
+
         } catch (err) {
             console.error('Erro ao fazer login:', err);
             setError('Erro ao fazer login. Verifique suas credenciais.');
@@ -123,7 +130,7 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
                                             className="border px-4 py-2 rounded border-zinc-300 text-xs focus:outline-none"
                                         />
 
-                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6">
+                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6 hover:bg-[var(--primary-dark)] cursor-pointer transition-colors duration-200">
                                             Enviar
                                         </button>
                                     </div>
@@ -184,8 +191,8 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
                                             className="border px-4 py-2 rounded border-zinc-300 text-xs focus:outline-none"
                                         />
 
-                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6">
-                                            Enviar
+                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6 hover:bg-[var(--primary-dark)] cursor-pointer transition-colors duration-200">
+                                            Registrar
                                         </button>
                                     </div>
 
