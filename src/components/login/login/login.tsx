@@ -1,6 +1,4 @@
-// components/global/LoginModal.tsx
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import { jwtDecode } from 'jwt-decode';
@@ -26,11 +24,10 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [accessToken, setAccessToken] = useState('');
     const [error, setError] = useState('');
-    const [isLoginInterface, setIsLoginInterface] = useState(false)
-    const API_URL = import.meta.env.VITE_API_URL;
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setError('');
 
@@ -79,14 +76,11 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
                 password
             });
 
-            console.log('Usuário criado:', response.data);
 
-            setIsLoginInterface(true);
-            setName('');
-            setPassword('');
+            setAccessToken(response.data.access_token);
         } catch (err) {
-            console.error('Erro ao cadastrar:', err);
-            setError('Erro ao cadastrar. Verifique os dados.');
+            console.error(err);
+            setError('Erro ao fazer login. Verifique o e-mail e a senha.');
         }
     };
 
@@ -130,7 +124,7 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
                                             className="border px-4 py-2 rounded border-zinc-300 text-xs focus:outline-none"
                                         />
 
-                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6 hover:bg-[var(--primary-dark)] cursor-pointer transition-colors duration-200">
+                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6">
                                             Enviar
                                         </button>
                                     </div>
@@ -191,8 +185,8 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
                                             className="border px-4 py-2 rounded border-zinc-300 text-xs focus:outline-none"
                                         />
 
-                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6 hover:bg-[var(--primary-dark)] cursor-pointer transition-colors duration-200">
-                                            Registrar
+                                        <button type="submit" className="bg-purple-600 text-white px-4 py-2 rounded mt-6">
+                                            Enviar
                                         </button>
                                     </div>
 
@@ -217,9 +211,7 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
                         </form>
                     )}
                 </div>
-
-            </div>
-
-        </Modal >
+            )}
+        </div>
     );
 }

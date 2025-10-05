@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import elockPurpleText from '/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 
+export default function Header() {
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
     user: {
