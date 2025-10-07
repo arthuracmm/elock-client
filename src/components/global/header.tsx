@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import elockPurpleText from '/images/elock-texto.png'
@@ -5,6 +6,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Modal from '@mui/material/Modal';
 
+export default function Header() {
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
     isLoggedIn: boolean;

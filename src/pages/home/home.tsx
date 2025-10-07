@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import Header from "../../components/global/header"
 import LoginModal from "../../components/login/login/login";
 
+interface UserData {
+    name: string;
+    email: string;
+}
+
 export default function HomePage() {
     const [isLoginModalOpen, setLoginModalOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);

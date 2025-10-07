@@ -1,6 +1,4 @@
-// components/global/LoginModal.tsx
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import { jwtDecode } from 'jwt-decode';
@@ -11,6 +9,7 @@ import LoginSVG from '/svgs/login.svg'
 interface LoginModalProps {
     open: boolean;
     handleClose: () => void;
+    onLoginSuccess?: (userData: any) => void;
 }
 
 interface JWTPayload {
@@ -21,15 +20,14 @@ interface JWTPayload {
     exp: number;
 }
 
-export default function LoginModal({ open, handleClose }: LoginModalProps) {
+export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginModalProps) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [accessToken, setAccessToken] = useState('');
     const [error, setError] = useState('');
-    const [isLoginInterface, setIsLoginInterface] = useState(false)
-    const API_URL = import.meta.env.VITE_API_URL;
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setError('');
 
@@ -51,9 +49,15 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
 
             localStorage.setItem('userData', JSON.stringify(userData));
 
+            if (onLoginSuccess) {
+                onLoginSuccess(userData);
+            }
+
+
             handleClose();
             setEmail('');
             setPassword('');
+
         } catch (err) {
             console.error('Erro ao fazer login:', err);
             setError('Erro ao fazer login. Verifique suas credenciais.');
@@ -72,14 +76,11 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
                 password
             });
 
-            console.log('Usuário criado:', response.data);
 
-            setIsLoginInterface(true);
-            setName('');
-            setPassword('');
+            setAccessToken(response.data.access_token);
         } catch (err) {
-            console.error('Erro ao cadastrar:', err);
-            setError('Erro ao cadastrar. Verifique os dados.');
+            console.error(err);
+            setError('Erro ao fazer login. Verifique o e-mail e a senha.');
         }
     };
 
@@ -210,9 +211,7 @@ export default function LoginModal({ open, handleClose }: LoginModalProps) {
                         </form>
                     )}
                 </div>
-
-            </div>
-
-        </Modal >
+            )}
+        </div>
     );
 }
