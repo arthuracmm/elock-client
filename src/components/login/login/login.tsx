@@ -4,7 +4,7 @@ import Modal from '@mui/material/Modal';
 import { jwtDecode } from 'jwt-decode';
 import elockPurpleText from '/images/elock-texto.png'
 import WelcomeSVG from '/svgs/welcome.svg'
-import LoginSVG from '/svgs/login.svg'
+import LoginSVG from '/svgs/signin.svg'
 
 interface LoginModalProps {
     open: boolean;
@@ -20,12 +20,14 @@ interface JWTPayload {
     exp: number;
 }
 
-export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginModalProps) {
+export default function LoginModal({ open, handleClose, onLoginSuccess }: LoginModalProps) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [accessToken, setAccessToken] = useState('');
     const [error, setError] = useState('');
+    const [isLoginInterface, setIsLoginInterface] = useState(true);
+    const API_URL = import.meta.env.VITE_API_URL;
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -94,8 +96,6 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
         >
             <div className="flex items-center justify-center bg-white p-2 rounded-xl shadow-md relative gap-28 ">
                 <div className="flex flex-1 flex-col h-full justify-between">
-                    <div className="flex w-full justify-between">
-                    </div>
                     {isLoginInterface ? (
                         <form onSubmit={handleSubmit} name="loginForm" className="flex flex-col gap-2 h-full">
                             <div className="flex">
@@ -211,7 +211,9 @@ export default function LoginModal({ open, handleClose, onLoginSuccess}: LoginMo
                         </form>
                     )}
                 </div>
-            )}
-        </div>
+
+            </div>
+
+        </Modal>
     );
 }

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import elockPurpleText from '/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Modal from '@mui/material/Modal';
+import Divider from '@mui/material/Divider';
 
-export default function Header() {
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
     isLoggedIn: boolean;
@@ -17,6 +16,17 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
     const navigate = useNavigate();
     const [userName, setUserName] = useState<string | null>(null);
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+
+    const menuItems = [
+        {
+            name: 'Home',
+            path: '/'
+        },
+        {
+            name: 'Fechaduras',
+            path: '/door-locks'
+        }
+    ]
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -42,6 +52,21 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                 onClick={() => { navigate('/') }}
                 className='cursor-pointer'
             />
+
+            <div className="flex gap-4">
+                {menuItems.map((item, index) => (
+                    <div key={item.path} className="flex gap-4" onClick={() => navigate(item.path)}>
+                        <div className="flex flex-col items-center hover:-translate-y-1 transition-transform">
+                            <p className="cursor-pointer hover:text-[var(--primary)]">{item.name}</p>
+                            {location.pathname === item.path && (
+                                <div className="flex h-0.5 w-[60%] bg-[var(--accent)]" />
+                            )}
+                        </div>
+
+                        {index !== menuItems.length - 1 && <Divider orientation="vertical" />}
+                    </div>
+                ))}
+            </div>
             {userName ? (
                 <div className="flex gap-4">
                     <div
