@@ -1,21 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import elockPurpleText from '/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Modal from '@mui/material/Modal';
 import Divider from '@mui/material/Divider';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
-    isLoggedIn: boolean;
-    onLogout: () => void;
 }
 
-export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: HeaderProps) {
+export default function Header({ setLoginModalOpen }: HeaderProps) {
     const navigate = useNavigate();
-    const [userName, setUserName] = useState<string | null>(null);
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+    const { user, isLoggedIn, logout } = useAuth();
 
     const menuItems = [
         {
@@ -27,21 +26,6 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
             path: '/door-locks'
         }
     ]
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            const userDataString = localStorage.getItem('userData');
-            if (userDataString) {
-                try {
-                    const userData = JSON.parse(userDataString);
-                    const firstName = (userData.name.split(' ')[0]);
-                    setUserName(firstName)
-                } catch (error) {
-                    console.error("Erro ao analisar userData:", error);
-                }
-            }
-        }
-    }, [isLoggedIn]);
 
     return (
         <div className="flex justify-between p-6 px-14 bg-white items-center absolute right-10 top-4 w-[calc(100vw-5rem)] rounded-full font-semibold">
@@ -67,12 +51,12 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                     </div>
                 ))}
             </div>
-            {userName ? (
+            {isLoggedIn && user ? (
                 <div className="flex gap-4">
                     <div
-                        className="flex text-lg items-center gap-1 cursor-pointer bg-[var(--accent)] hover:bg-[var(--primary-light)] px-5 py-2 transition-colors rounded-full"
+                        className="flex text-lg items-center gap-1 cursor-pointer bg-[var(--accent)] hover:bg-[var(--primary-lighter)] px-5 py-2 transition-colors rounded-full"
                     >
-                        <p>Olá, <span className="font-bold">{userName}</span></p>
+                        <p>Olá, <span className="font-bold">{user.name.split(" ")[0]}</span></p>
                     </div>
                     <button
                         onClick={() => setLogoutModalOpen(true)}
@@ -90,17 +74,16 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => {
-                                        onLogout();
-                                        setUserName(null);
+                                        logout();
                                         setLogoutModalOpen(false);
                                     }}
-                                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+                                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
                                 >
                                     Sim, sair
                                 </button>
                                 <button
                                     onClick={() => setLogoutModalOpen(false)}
-                                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition-colors"
+                                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition-colors cursor-pointer"
                                 >
                                     Cancelar
                                 </button>
