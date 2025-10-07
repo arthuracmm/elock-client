@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Modal from '@mui/material/Modal';
 import { jwtDecode } from 'jwt-decode';
-import elockPurpleText from '../../../../public/images/elock-texto.png'
-import WelcomeSVG from '../../../../public/svgs/welcome.svg'
-import LoginSVG from '../../../../public/svgs/login.svg'
+import elockPurpleText from '/images/elock-texto.png'
+import WelcomeSVG from '/svgs/welcome.svg'
+import LoginSVG from '/svgs/login.svg'
 
 interface LoginModalProps {
     open: boolean;
