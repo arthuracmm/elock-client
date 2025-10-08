@@ -9,9 +9,11 @@ import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
+    itemSelected: string;
+    setItemSelected: (item: string) => void;
 }
 
-export default function Header({ setLoginModalOpen }: HeaderProps) {
+export default function Header({ setLoginModalOpen, itemSelected, setItemSelected }: HeaderProps) {
     const navigate = useNavigate();
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
     const { user, isLoggedIn, logout } = useAuth();
@@ -19,11 +21,9 @@ export default function Header({ setLoginModalOpen }: HeaderProps) {
     const menuItems = [
         {
             name: 'Home',
-            path: '/'
         },
         {
             name: 'Fechaduras',
-            path: '/door-locks'
         }
     ]
 
@@ -39,10 +39,10 @@ export default function Header({ setLoginModalOpen }: HeaderProps) {
 
             <div className="flex gap-4">
                 {menuItems.map((item, index) => (
-                    <div key={item.path} className="flex gap-4" onClick={() => navigate(item.path)}>
+                    <div className="flex gap-4" onClick={() => setItemSelected(item.name)}>
                         <div className="flex flex-col items-center hover:-translate-y-1 transition-transform">
                             <p className="cursor-pointer hover:text-[var(--primary)]">{item.name}</p>
-                            {location.pathname === item.path && (
+                            {itemSelected === item.name && (
                                 <div className="flex h-0.5 w-[60%] bg-[var(--accent)]" />
                             )}
                         </div>
@@ -51,6 +51,7 @@ export default function Header({ setLoginModalOpen }: HeaderProps) {
                     </div>
                 ))}
             </div>
+
             {isLoggedIn && user ? (
                 <div className="flex gap-4">
                     <div
