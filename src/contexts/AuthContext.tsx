@@ -2,10 +2,37 @@ import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import axios from "axios";
 
+interface DoorLock {
+    id: number;
+    name: string;
+    localization: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface DoorLockUser {
+    id: number;
+    userId: number;
+    doorLockId: number;
+    paper: string;
+    status: string;
+    sharedBy: number | null;
+    startsAt: string | null;
+    expiresAt: string | null;
+    createdAt: string;
+    updatedAt: string;
+    doorLock: DoorLock;
+    sharedByUser: User | null;
+}
+
 interface User {
-    id: string;
+    id: number;
     name: string;
     email: string;
+    createdAt: string;
+    updatedAt: string;
+    doorLockUsers: DoorLockUser[];
 }
 
 interface AuthContextType {
@@ -20,27 +47,57 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [userId, setUserId] = useState<number | null>(null);
     const [user, setUser] = useState<User | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     axios.defaults.withCredentials = true;
 
-    const fetchUserData = async () => {
+    const fetchUser = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/auth/profile`, { withCredentials: true });
+            setUserId(response.data.id);
+        } catch (err) {
+            setUserId(0);
+            console.log(err)
+        }
+    };
+
+    const fetchUserData = async () => {
+        if (!userId) return;
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/${userId}`);
             setUser(response.data);
             setIsLoggedIn(true);
-            console.log("user logado: ", response.data)
+            console.log('user logado:', response.data)
         } catch (err) {
             setUser(null);
             setIsLoggedIn(false);
+            console.log(err)
         }
     };
 
     useEffect(() => {
-        fetchUserData().finally(() => setIsLoading(false));
+        const loadUser = async () => {
+            setIsLoading(true);
+            try {
+                await fetchUser();
+            } catch {
+                setUser(null);
+                setIsLoggedIn(false);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadUser();
     }, []);
+
+    useEffect(() => {
+        if (userId) {
+            fetchUserData();
+        }
+    }, [userId]);
 
     const login = async (email: string, password: string) => {
         try {
