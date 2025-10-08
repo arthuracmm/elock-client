@@ -57,10 +57,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const fetchUser = async () => {
         try {
             const response = await axios.get(`${import.meta.env.VITE_API_URL}/auth/profile`, { withCredentials: true });
-            setUserId(response.data.id);
+            const id = response.data.id;
+            setUserId(id);
+            return id;
         } catch (err) {
             setUserId(0);
-            console.log(err)
+            console.log(err);
+            return null;
         }
     };
 
@@ -102,7 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, password: string) => {
         try {
             await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }, { withCredentials: true });
-            await fetchUserData();
+            const newUserId = await fetchUser();
+            if (newUserId) {
+                await fetchUserData();
+            }
         } catch (err) {
             setUser(null);
             setIsLoggedIn(false);
@@ -112,11 +118,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 
     const logout = () => {
-        axios.post(`${import.meta.env.VITE_API_URL}/auth/logout`, {}, { withCredentials: true })
-            .finally(() => {
-                setUser(null);
-                setIsLoggedIn(false);
-            });
+        setUser(null);
+        setUserId(null);
+        setIsLoggedIn(false);
     };
 
     return (
