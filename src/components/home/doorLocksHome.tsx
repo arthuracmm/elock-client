@@ -1,5 +1,5 @@
 import { useAuth } from "../../contexts/AuthContext";
-import DoorLocksCard from "../door-locks/doorLocksCard";
+import DoorLocksCard from "./doorLocksCard";
 
 export default function DoorLocksHome() {
     const { user } = useAuth();

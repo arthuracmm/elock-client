@@ -28,7 +28,7 @@ export default function Header({ setLoginModalOpen, itemSelected, setItemSelecte
     ]
 
     return (
-        <div className="flex justify-between p-6 px-14 bg-white items-center absolute right-10 top-4 w-[calc(100vw-5rem)] rounded-full font-semibold">
+        <div className="flex justify-between p-6 px-14 bg-white items-center absolute right-10 top-4 w-[calc(100vw-5rem)] rounded-full font-semibold" >
             <img
                 src={elockPurpleText}
                 alt="elock-logo"
@@ -37,7 +37,7 @@ export default function Header({ setLoginModalOpen, itemSelected, setItemSelecte
                 className='cursor-pointer'
             />
 
-            <div className="flex gap-4">
+            <div className="flex gap-4" onClick={() => {navigate('/')}}>
                 {menuItems.map((item, index) => (
                     <div className="flex gap-4" onClick={() => setItemSelected(item.name)}>
                         <div className="flex flex-col items-center hover:-translate-y-1 transition-transform">

@@ -41,6 +41,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
+    token: string | null;
     refreshUserData: () => Promise<void>;
 }
 
@@ -49,6 +50,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [userId, setUserId] = useState<number | null>(null);
     const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<string | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -104,11 +106,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = async (email: string, password: string) => {
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }, { withCredentials: true });
-            const newUserId = await fetchUser();
-            if (newUserId) {
-                await fetchUserData();
-            }
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }, { withCredentials: true });
+            const token = response.data.token;
+            setToken(token);
+            await fetchUser();
+            await fetchUserData();
         } catch (err) {
             setUser(null);
             setIsLoggedIn(false);
@@ -124,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, isLoading, login, logout, refreshUserData: fetchUserData }}>
+        <AuthContext.Provider value={{ user, isLoggedIn, isLoading, login, logout, token, refreshUserData: fetchUserData }}>
             {children}
         </AuthContext.Provider>
     );
