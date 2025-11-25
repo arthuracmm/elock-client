@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext"; // ajuste o caminho conforme sua estrutura
+import { useAuth } from "../../contexts/AuthContext";
+import { useSocket } from "../../hooks/useSocket";
+import axios from "axios";
 
 export default function DoorLockPage() {
     const { id } = useParams<{ id: string }>();
@@ -9,8 +11,28 @@ export default function DoorLockPage() {
 
     const [status, setStatus] = useState<"on" | "off">("off");
     const [hasAccess, setHasAccess] = useState<boolean | null>(null);
-    const socketRef = useRef<WebSocket | null>(null);
 
+    // Usa o hook personalizado
+    const { socket, isConnected } = useSocket();
+
+    // Busca o status atual da fechadura do banco de dados
+    useEffect(() => {
+        if (!id) return;
+
+        const fetchLockStatus = async () => {
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/door-locks/${id}`);
+                console.log('Status da fechadura carregado:', response.data.status);
+                setStatus(response.data.status);
+            } catch (err) {
+                console.error('Erro ao buscar status da fechadura:', err);
+            }
+        };
+
+        fetchLockStatus();
+    }, [id]);
+
+    // Verificação de acesso
     useEffect(() => {
         if (!isLoggedIn || !user || isLoading) return;
 
@@ -26,33 +48,49 @@ export default function DoorLockPage() {
         }
     }, [user, id, isLoading, isLoggedIn, navigate]);
 
-    // 🔗 Conexão com WebSocket
+    // Lógica do WebSocket
     useEffect(() => {
-        if (hasAccess !== true || !id) return;
+        if (!socket || !isConnected || !hasAccess || !id) return;
 
-        const ws = new WebSocket(`ws://localhost:8080?doorLockId=${id}`);
-        socketRef.current = ws;
+        // Entra na sala da fechadura
+        console.log(`Entrando na sala lock:${id}`);
+        socket.emit('join-lock', { lockId: Number(id) });
 
-
-        ws.onmessage = (event) => {
-            const message = event.data.toString();
-
-            // 👇 Novo formato: "doorLockId:5 status:on"
-            const match = message.match(/doorLockId:(\d+)\sstatus:(on|off)/);
-            if (match) {
-                const [, , newStatus] = match;
-                setStatus(newStatus as "on" | "off");
+        // Escuta atualizações
+        const handleUpdate = (data: any) => {
+            console.log('Atualização recebida:', data);
+            if (data.id === Number(id) && data.status) {
+                setStatus(data.status); // Backend já envia 'on' ou 'off'
             }
         };
 
-        ws.onerror = (err) => console.error("⚠️ Erro no WebSocket:", err);
+        socket.on('door-lock-updated', handleUpdate);
 
-        return () => ws.close();
-    }, [id, hasAccess]);
+        return () => {
+            console.log(`Saindo da sala lock:${id}`);
+            socket.emit('leave-lock', { lockId: Number(id) });
+            socket.off('door-lock-updated', handleUpdate);
+        };
+    }, [socket, isConnected, hasAccess, id]);
 
+
+    // Função para alternar status via WebSocket
     const toggleStatus = () => {
+        if (!socket || !isConnected) {
+            console.warn("Socket não conectado");
+            return;
+        }
+
         const newStatus = status === "on" ? "off" : "on";
-        socketRef.current?.send(`status:${newStatus}`);
+        console.log(`Emitindo toggle-lock: lockId=${id}, status=${newStatus}`);
+
+        socket.emit('toggle-lock', {
+            lockId: Number(id),
+            status: newStatus
+        });
+
+        // Atualiza otimisticamente (será sobrescrito pelo evento door-lock-updated)
+        setStatus(newStatus);
     };
 
     if (isLoading || hasAccess === null) {
@@ -69,12 +107,28 @@ export default function DoorLockPage() {
         );
     }
 
-    // ✅ Usuário autorizado
     return (
         <div className="flex flex-col p-4 gap-4">
+            {/* Botão de voltar */}
+            <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold w-fit"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+                Voltar
+            </button>
+
             <h1 className="text-xl font-bold">Fechadura ID: {id}</h1>
+            <div className="flex items-center gap-2">
+                <span>Status Conexão:</span>
+                <span className={`font-bold ${isConnected ? "text-green-600" : "text-red-600"}`}>
+                    {isConnected ? "Conectado" : "Desconectado"}
+                </span>
+            </div>
             <p>
-                Status atual: <strong>{status.toUpperCase()}</strong>
+                Status da Porta: <strong>{status.toUpperCase()}</strong>
             </p>
             <button
                 onClick={toggleStatus}
@@ -83,6 +137,10 @@ export default function DoorLockPage() {
             >
                 Alternar para {status === "on" ? "OFF" : "ON"}
             </button>
+            <p className="text-sm text-gray-500 mt-2">
+                Nota: A alteração de status via botão requer implementação no backend.
+                O status atualiza em tempo real se alterado externamente (ex: ESP32).
+            </p>
         </div>
     );
 }

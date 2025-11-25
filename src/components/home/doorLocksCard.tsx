@@ -3,6 +3,7 @@ import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import KeyIcon from '@mui/icons-material/Key';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 interface DoorLocksCardProps {
     access: {
@@ -21,11 +22,30 @@ interface DoorLocksCardProps {
             name: string;
         } | null;
     };
+    onDelete?: () => Promise<void>;
 }
 
-export default function DoorLocksCard({ access }: DoorLocksCardProps) {
+export default function DoorLocksCard({ access, onDelete }: DoorLocksCardProps) {
     const isActive = access.doorLock.status === 'ON';
     const statusColor = isActive ? 'bg-green-500' : 'bg-red-500';
+
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.preventDefault(); // Previne navegação do Link
+        e.stopPropagation();
+
+        if (!confirm(`Tem certeza que deseja excluir a fechadura "${access.doorLock.name}"?`)) {
+            return;
+        }
+
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/door-locks/${access.doorLock.id}`);
+            alert("Fechadura excluída com sucesso!");
+            if (onDelete) await onDelete();
+        } catch (err) {
+            console.error("Erro ao excluir fechadura:", err);
+            alert("Erro ao excluir fechadura!");
+        }
+    };
 
     return (
         <Link to={`/door-locks/${access.doorLock.id}`} className="card-styles">
@@ -45,6 +65,19 @@ export default function DoorLocksCard({ access }: DoorLocksCardProps) {
                         : access.paper === 'admin' ? <AdminPanelSettingsIcon fontSize='small' />
                             : <KeyIcon fontSize='small' />}
                 </span>
+
+                {/* Botão de deletar (apenas para owners) */}
+                {access.paper === 'owner' && onDelete && (
+                    <button
+                        onClick={handleDelete}
+                        className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition"
+                        title="Excluir fechadura"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                    </button>
+                )}
 
                 <div className="flex items-center gap-2 text-zinc-600 mb-1">
                     <FmdGoodIcon fontSize="small" />

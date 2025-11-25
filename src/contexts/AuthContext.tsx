@@ -43,6 +43,7 @@ interface AuthContextType {
     logout: () => void;
     token: string | null;
     refreshUserData: () => Promise<void>;
+    fetchUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,11 +51,20 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [userId, setUserId] = useState<number | null>(null);
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
+    const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     axios.defaults.withCredentials = true;
+
+    // Salva o token no localStorage
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem('token', token);
+        } else {
+            localStorage.removeItem('token');
+        }
+    }, [token]);
 
     const fetchUser = async () => {
         try {
@@ -107,7 +117,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (email: string, password: string) => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, { email, password }, { withCredentials: true });
-            const token = response.data.token;
+            console.log('[AuthContext] Login response:', response.data);
+            const token = response.data.access_token; // Backend retorna 'access_token', não 'token'
+            console.log('[AuthContext] Token extraído:', token);
             setToken(token);
             await fetchUser();
             await fetchUserData();
@@ -122,11 +134,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = () => {
         setUser(null);
         setUserId(null);
+        setToken(null);
         setIsLoggedIn(false);
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoggedIn, isLoading, login, logout, token, refreshUserData: fetchUserData }}>
+        <AuthContext.Provider value={{ user, isLoggedIn, isLoading, login, logout, token, refreshUserData: fetchUserData, fetchUserData }}>
             {children}
         </AuthContext.Provider>
     );
