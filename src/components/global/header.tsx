@@ -24,8 +24,20 @@ export default function Header({ setLoginModalOpen, itemSelected, setItemSelecte
         },
         {
             name: 'Fechaduras',
+        },
+        {
+            name: 'Dashboard',
         }
     ]
+
+    const handleMenuClick = (itemName: string) => {
+        setItemSelected(itemName);
+        if (itemName === 'Dashboard') {
+            navigate('/dashboard');
+        } else {
+            navigate('/');
+        }
+    };
 
     return (
         <div className="flex justify-between p-6 px-14 bg-white items-center absolute right-10 top-4 w-[calc(100vw-5rem)] rounded-full font-semibold" >
@@ -37,9 +49,9 @@ export default function Header({ setLoginModalOpen, itemSelected, setItemSelecte
                 className='cursor-pointer'
             />
 
-            <div className="flex gap-4" onClick={() => {navigate('/')}}>
+            <div className="flex gap-4">
                 {menuItems.map((item, index) => (
-                    <div className="flex gap-4" onClick={() => setItemSelected(item.name)}>
+                    <div key={index} className="flex gap-4" onClick={() => handleMenuClick(item.name)}>
                         <div className="flex flex-col items-center hover:-translate-y-1 transition-transform">
                             <p className="cursor-pointer hover:text-[var(--primary)]">{item.name}</p>
                             {itemSelected === item.name && (
