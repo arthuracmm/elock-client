@@ -6,6 +6,7 @@ import remote from "/svgs/remote.svg";
 import iotconnect from "/svgs/iotconnect.svg";
 import everywhere from "/svgs/everywhere.svg";
 import elock from "/images/elock.png";
+
 export default function HomePage() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [itemSelected, setItemSelected] = useState("Home");
@@ -14,138 +15,114 @@ export default function HomePage() {
     setLoginModalOpen(false);
   };
 
+  const features = [
+    {
+      title: "Controle remoto",
+      description: "Tranque e destranque suas portas pelo app ou site com uma interface direta e segura.",
+      image: everywhere,
+      alt: "Controle remoto",
+    },
+    {
+      title: "Conectividade IoT",
+      description: "Acompanhe suas fechaduras em tempo real com comunicação estável e criptografada.",
+      image: iotconnect,
+      alt: "Conectividade IoT",
+    },
+    {
+      title: "Segurança avançada",
+      description: "Gerencie permissões, monitore acessos e mantenha o controle de cada ambiente.",
+      image: remote,
+      alt: "Segurança",
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 min-h-screen w-full h-full relative bg-zinc-100/50">
+    <div className="app-shell flex min-h-screen w-full flex-col">
       <Header
         setLoginModalOpen={setLoginModalOpen}
         itemSelected={itemSelected}
         setItemSelected={setItemSelected}
       />
       <LoginModal open={isLoginModalOpen} handleClose={handleLoginSuccess} />
-      <div className="flex mt-28 p-2">
+
+      <main className="flex w-full px-4 pb-10 pt-32 md:px-10">
         {itemSelected === "Home" && (
-          <div className="flex flex-col items-center justify-center w-full px-6 md:px-20 lg:px-40 text-center mt-10">
-            {/* Hero Section */}
-            <section className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-20">
-              <div className="flex flex-col items-start text-left md:w-1/2">
-                <h1 className="text-4xl md:text-5xl font-bold text-[var(--text-color)] mb-4">
-                  Bem-vindo à{" "}
-                  <span className="text-[var(--primary)]">Elock</span>
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-16">
+            <section className="grid min-h-[58vh] items-center gap-10 rounded-[2rem] bg-white/70 p-6 shadow-[0_25px_70px_rgba(15,35,89,0.08)] ring-1 ring-[var(--border-color)] md:grid-cols-[1.2fr_0.8fr] md:p-12">
+              <div className="flex flex-col items-start text-left">
+                <span className="mb-5 rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--primary-darker)]">
+                  Segurança inteligente para portas conectadas
+                </span>
+                <h1 className="max-w-3xl text-4xl font-bold leading-tight text-[var(--text-color)] md:text-6xl">
+                  TrancAi no controle da sua segurança
                 </h1>
-                <p className="text-[var(--text-color)]/70 text-lg mb-6 max-w-lg">
-                  A{" "}
-                  <span className="font-semibold text-[var(--primary)]">
-                    Elock
-                  </span>{" "}
-                  é uma solução de
-                  <span className="text-[var(--text-color)]">
-                    {" "}
-                    fechaduras inteligentes IoT{" "}
-                  </span>
-                  que une segurança, tecnologia e praticidade. Controle suas
-                  portas remotamente e monitore o acesso em tempo real — tudo em
-                  um só lugar.
+                <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--muted-text)] md:text-lg">
+                  Controle fechaduras inteligentes, acompanhe acessos em tempo real e organize permissões em uma experiência azul, limpa e fácil de usar.
                 </p>
 
-                <button className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] transition text-white font-semibold px-6 py-3 rounded-xl shadow">
-                  Saiba mais
-                </button>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setItemSelected("Fechaduras")}
+                    className="rounded-xl bg-[var(--primary)] px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[var(--primary-dark)]"
+                  >
+                    Ver fechaduras
+                  </button>
+                  <button
+                    onClick={() => setLoginModalOpen(true)}
+                    className="rounded-xl border border-[var(--border-color)] bg-white px-6 py-3 font-semibold text-[var(--primary-darker)] transition hover:border-[var(--primary-light)] hover:text-[var(--primary)]"
+                  >
+                    Entrar na plataforma
+                  </button>
+                </div>
               </div>
 
-              <div className="flex justify-center">
-                <img src={elock} width="200" height="200" />
+              <div className="flex justify-center md:justify-end">
+                <div className="relative flex aspect-square w-64 items-center justify-center rounded-[2rem] bg-[var(--accent-light)] ring-1 ring-[var(--border-color)] md:w-80">
+                  <img src={elock} width="180" alt="Elock" className="relative z-10 drop-shadow-xl" />
+                </div>
               </div>
             </section>
-            {/* Features Section */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 w-full">
-              <div className="bg-[var(--background-alt)] rounded-2xl p-6 shadow flex flex-col items-center border border-[var(--border-color)]">
-                <img
-                  src={everywhere}
-                  alt="Controle remoto"
-                  className="w-50 h-50 mb-4"
-                />
-                <h3 className="text-xl font-semibold text-[var(--primary-dark)] mb-2">
-                  Controle Remoto
-                </h3>
-                <p className="text-[var(--text-color)]/70 text-sm">
-                  Tranque e destranque suas portas pelo app ou site — com apenas
-                  um toque.
-                </p>
-              </div>
 
-              <div className="bg-[var(--background-alt)] rounded-2xl p-6 shadow flex flex-col items-center border border-[var(--border-color)]">
-                <img
-                  src={iotconnect}
-                  alt="Conectividade IoT"
-                  className="w-60 h-50 mb-4"
-                />
-                <h3 className="text-xl font-semibold text-[var(--primary-dark)] mb-2">
-                  Conectividade IoT
-                </h3>
-                <p className="text-[var(--text-color)]/70 text-sm">
-                  Conexão estável via Wi-Fi, com comunicação criptografada e
-                  controle em tempo real.
-                </p>
-              </div>
-
-              <div className="bg-[var(--background-alt)] rounded-2xl p-6 shadow flex flex-col items-center border border-[var(--border-color)]">
-                <img src={remote} alt="Segurança" className=" h-50 w-50 mb-4" />
-                <h3 className="text-xl font-semibold text-[var(--primary-dark)] mb-2">
-                  Segurança Avançada
-                </h3>
-                <p className="text-[var(--text-color)]/70 text-sm">
-                  Sistema protegido com autenticação forte e monitoramento de
-                  acessos 24h.
-                </p>
-              </div>
+            <section className="grid grid-cols-1 gap-5 md:grid-cols-3">
+              {features.map((feature) => (
+                <article key={feature.title} className="surface-card flex min-h-72 flex-col rounded-2xl p-6">
+                  <div className="mb-5 flex h-36 items-center justify-center rounded-xl bg-[var(--accent-light)]">
+                    <img src={feature.image} alt={feature.alt} className="h-32 w-40 object-contain" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[var(--primary-darker)]">{feature.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-[var(--muted-text)]">{feature.description}</p>
+                </article>
+              ))}
             </section>
-            {/* Call to Action Section */}
-            <section className="mt-24 bg-[var(--primary)] text-[var(--secondary)] py-10 px-6 rounded-3xl shadow-lg w-full max-w-4xl">
-              <h2 className="text-3xl font-bold mb-4">
-                Transforme sua casa em um ambiente inteligente com a Elock
-              </h2>
-              <p className="text-[var(--accent-light)] mb-6">
-                Cadastre-se e comece a conectar suas fechaduras agora mesmo.
-              </p>
+
+            <section className="grid items-center gap-6 rounded-[1.75rem] bg-[var(--primary-darker)] p-8 text-white md:grid-cols-[1fr_auto] md:p-10">
+              <div>
+                <h2 className="text-2xl font-bold md:text-3xl">
+                  Transforme sua casa em um ambiente inteligente com a TrancAi
+                </h2>
+                <p className="mt-3 text-blue-100">
+                  Cadastre-se e comece a conectar suas fechaduras agora mesmo.
+                </p>
+              </div>
               <button
                 onClick={() => setLoginModalOpen(true)}
-                className="bg-[var(--secondary)] text-[var(--primary)] font-semibold px-6 py-3 rounded-xl hover:bg-[var(--neutral)] transition"
+                className="w-fit rounded-xl bg-white px-6 py-3 font-semibold text-[var(--primary)] transition hover:bg-[var(--accent-light)]"
               >
-                Entrar na plataforma
+                Criar conta
               </button>
             </section>
-            {/* Footer */}
-            <footer className="bg-[var(--background-alt)] border-t border-[var(--border-color)] text-center text-[var(--text-color)]/70 py-6">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-6 md:px-20 lg:px-40">
+
+            <footer className="border-t border-[var(--border-color)] py-6 text-sm text-[var(--muted-text)]">
+              <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                 <div className="flex items-center gap-2">
-                  <span className="text-[var(--primary)] font-bold text-lg">
-                    Elock
-                  </span>
-                  <span className="text-sm">
-                    © {new Date().getFullYear()} Todos os direitos reservados
-                    TG-02-13 🐵🇧🇷.
-                  </span>
+                  <span className="font-bold text-[var(--primary)]">TrancAi</span>
+                  <span>© {new Date().getFullYear()} Todos os direitos reservados.</span>
                 </div>
 
-                <div className="flex items-center gap-6 text-sm">
-                  <a
-                    href="#sobre"
-                    className="hover:text-[var(--primary)] transition"
-                  >
-                    Sobre
-                  </a>
-                  <a
-                    href="#contato"
-                    className="hover:text-[var(--primary)] transition"
-                  >
-                    Contato
-                  </a>
-                  <a
-                    href="#privacidade"
-                    className="hover:text-[var(--primary)] transition"
-                  >
-                    Privacidade
-                  </a>
+                <div className="flex items-center gap-6">
+                  <a href="#sobre" className="transition hover:text-[var(--primary)]">Sobre</a>
+                  <a href="#contato" className="transition hover:text-[var(--primary)]">Contato</a>
+                  <a href="#privacidade" className="transition hover:text-[var(--primary)]">Privacidade</a>
                 </div>
               </div>
             </footer>
@@ -153,7 +130,7 @@ export default function HomePage() {
         )}
 
         {itemSelected === "Fechaduras" && <DoorLocksHome />}
-      </div>
+      </main>
     </div>
   );
 }

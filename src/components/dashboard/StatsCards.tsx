@@ -18,26 +18,26 @@ export default function StatsCards({ stats }: StatsCardsProps) {
         {
             title: 'Total de Fechaduras',
             value: stats.totalLocks,
-            icon: <DoorFrontIcon sx={{ fontSize: 40, color: '#1976d2' }} />,
-            color: '#e3f2fd',
+            icon: <DoorFrontIcon sx={{ fontSize: 40, color: '#0f62fe' }} />,
+            color: '#eff6ff',
         },
         {
             title: 'Fechaduras Ativas',
             value: stats.activeLocks,
-            icon: <LockOpenIcon sx={{ fontSize: 40, color: '#2e7d32' }} />,
-            color: '#e8f5e9',
+            icon: <LockOpenIcon sx={{ fontSize: 40, color: '#0284c7' }} />,
+            color: '#e0f2fe',
         },
         {
             title: 'Fechaduras Inativas',
             value: stats.inactiveLocks,
-            icon: <LockIcon sx={{ fontSize: 40, color: '#d32f2f' }} />,
-            color: '#ffebee',
+            icon: <LockIcon sx={{ fontSize: 40, color: '#475569' }} />,
+            color: '#f1f5f9',
         },
         {
             title: 'Total de Usuários',
             value: stats.totalUsers,
-            icon: <PeopleIcon sx={{ fontSize: 40, color: '#f57c00' }} />,
-            color: '#fff3e0',
+            icon: <PeopleIcon sx={{ fontSize: 40, color: '#1d4ed8' }} />,
+            color: '#dbeafe',
         },
     ];
 
@@ -54,22 +54,23 @@ export default function StatsCards({ stats }: StatsCardsProps) {
                     key={index}
                     sx={{
                         backgroundColor: card.color,
-                        boxShadow: 3,
-                        borderRadius: 2,
-                        transition: 'transform 0.2s',
+                        border: '1px solid #d7e3f5',
+                        boxShadow: '0 18px 45px rgba(15,35,89,0.08)',
+                        borderRadius: 4,
+                        transition: 'transform 0.2s, box-shadow 0.2s',
                         '&:hover': {
                             transform: 'translateY(-4px)',
-                            boxShadow: 6,
+                            boxShadow: '0 24px 55px rgba(15,35,89,0.14)',
                         },
                     }}
                 >
                     <CardContent>
                         <Box display="flex" alignItems="center" justifyContent="space-between">
                             <Box>
-                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                <Typography variant="body2" color="#64748b" gutterBottom>
                                     {card.title}
                                 </Typography>
-                                <Typography variant="h4" fontWeight="bold">
+                                <Typography variant="h4" fontWeight="bold" color="#0f172a">
                                     {card.value}
                                 </Typography>
                             </Box>

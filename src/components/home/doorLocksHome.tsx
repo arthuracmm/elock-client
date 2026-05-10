@@ -25,10 +25,8 @@ export default function DoorLocksHome() {
                 status: "off"
             });
 
-            // Recarrega os dados do usuário para atualizar a lista
             if (fetchUserData) await fetchUserData();
 
-            // Limpa o formulário e fecha o modal
             setNewLockName("");
             setNewLockLocation("");
             setIsCreating(false);
@@ -40,13 +38,17 @@ export default function DoorLocksHome() {
     };
 
     return (
-        <div className="flex flex-1 flex-col gap-6 justify-center">
-            <div className="flex flex-col w-full items-center gap-4">
-                <div className="flex items-center justify-between w-full max-w-6xl">
-                    <h3 className="text-4xl font-bold mb-2 text-[var(--primary)]">Suas Fechaduras</h3>
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-10">
+            <div className="flex flex-col gap-5">
+                <div className="surface-card flex w-full flex-col gap-4 rounded-2xl p-6 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <span className="text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">Controle de acesso</span>
+                        <h3 className="mt-1 text-3xl font-bold text-[var(--text-color)]">Suas Fechaduras</h3>
+                        <p className="mt-2 text-sm text-[var(--muted-text)]">Gerencie as fechaduras que pertencem à sua conta.</p>
+                    </div>
                     <button
                         onClick={() => setIsCreating(true)}
-                        className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-semibold px-4 py-2 rounded-lg transition flex items-center gap-2"
+                        className="flex w-fit items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-3 font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-[var(--primary-dark)]"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -56,68 +58,71 @@ export default function DoorLocksHome() {
                 </div>
 
                 {ownerLocks.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {ownerLocks.map((access) => (
                             <DoorLocksCard key={access.id} access={access} onDelete={fetchUserData} />
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-500 text-sm">Você não possui nenhuma fechadura.</p>
+                    <p className="surface-card rounded-2xl p-6 text-sm text-[var(--muted-text)]">Você não possui nenhuma fechadura.</p>
                 )}
             </div>
 
-            <div className="flex flex-col w-full items-center gap-4">
-                <h3 className="text-4xl font-bold mb-2 text-[var(--primary)]">Fechaduras Compartilhadas</h3>
+            <div className="flex flex-col gap-5">
+                <div>
+                    <span className="text-sm font-semibold uppercase tracking-wide text-[var(--primary)]">Compartilhamentos</span>
+                    <h3 className="mt-1 text-3xl font-bold text-[var(--text-color)]">Fechaduras Compartilhadas</h3>
+                </div>
                 {sharedLocks.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {sharedLocks.map((access) => (
                             <DoorLocksCard key={access.id} access={access} />
                         ))}
                     </div>
                 ) : (
-                    <p className="text-gray-500 text-sm">Nenhuma fechadura foi compartilhada com você.</p>
+                    <p className="surface-card rounded-2xl p-6 text-sm text-[var(--muted-text)]">Nenhuma fechadura foi compartilhada com você.</p>
                 )}
             </div>
 
-            {/* Modal de Criação */}
             {isCreating && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-4 text-[var(--primary)]">Criar Nova Fechadura</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4">
+                    <div className="surface-card w-full max-w-md rounded-2xl p-6">
+                        <h2 className="mb-1 text-2xl font-bold text-[var(--text-color)]">Criar Nova Fechadura</h2>
+                        <p className="mb-5 text-sm text-[var(--muted-text)]">Cadastre o nome e a localização do dispositivo.</p>
 
                         <div className="flex flex-col gap-4">
                             <div>
-                                <label className="block text-sm font-semibold mb-1">Nome</label>
+                                <label className="mb-1 block text-sm font-semibold text-slate-700">Nome</label>
                                 <input
                                     type="text"
                                     value={newLockName}
                                     onChange={(e) => setNewLockName(e.target.value)}
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    className="w-full rounded-xl border border-[var(--border-color)] bg-white px-3 py-2 outline-none transition focus:border-[var(--primary-light)] focus:ring-4 focus:ring-blue-100"
                                     placeholder="Ex: Porta Principal"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold mb-1">Localização</label>
+                                <label className="mb-1 block text-sm font-semibold text-slate-700">Localização</label>
                                 <input
                                     type="text"
                                     value={newLockLocation}
                                     onChange={(e) => setNewLockLocation(e.target.value)}
-                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                    className="w-full rounded-xl border border-[var(--border-color)] bg-white px-3 py-2 outline-none transition focus:border-[var(--primary-light)] focus:ring-4 focus:ring-blue-100"
                                     placeholder="Ex: Entrada da Casa"
                                 />
                             </div>
 
-                            <div className="flex gap-2 justify-end mt-4">
+                            <div className="mt-4 flex justify-end gap-2">
                                 <button
                                     onClick={() => setIsCreating(false)}
-                                    className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition"
+                                    className="rounded-xl border border-[var(--border-color)] px-4 py-2 font-semibold text-slate-700 transition hover:bg-[var(--accent-light)]"
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     onClick={handleCreateLock}
-                                    className="px-4 py-2 bg-[var(--primary)] text-white rounded hover:bg-[var(--primary-dark)] transition"
+                                    className="rounded-xl bg-[var(--primary)] px-4 py-2 font-semibold text-white transition hover:bg-[var(--primary-dark)]"
                                 >
                                     Criar
                                 </button>

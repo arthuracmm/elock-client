@@ -14,10 +14,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
     };
 
     return (
-        <div className="flex flex-col flex-1 min-h-screen min-w-screen max-h-screen max-w-screen relative bg-zinc-100/50">
+        <div className="app-shell flex min-h-screen min-w-screen flex-1 flex-col relative">
             <Header setLoginModalOpen={setLoginModalOpen} />
             <LoginModal open={isLoginModalOpen} handleClose={handleLoginSuccess} />
-            <div className="flex mt-28 p-2">
+            <div className="flex px-4 pb-8 pt-32">
                 {children}
             </div>
         </div>

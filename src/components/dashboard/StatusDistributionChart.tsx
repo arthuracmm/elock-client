@@ -8,13 +8,13 @@ interface StatusDistributionChartProps {
     }>;
 }
 
-const COLORS = ['#2e7d32', '#d32f2f'];
+const COLORS = ['#0f62fe', '#64748b'];
 
 export default function StatusDistributionChart({ data }: StatusDistributionChartProps) {
     return (
-        <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+        <Card sx={{ border: '1px solid #d7e3f5', boxShadow: '0 18px 45px rgba(15,35,89,0.08)', borderRadius: 4 }}>
             <CardContent>
-                <Typography variant="h6" gutterBottom fontWeight="bold">
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="#0f172a">
                     Distribuição de Status
                 </Typography>
                 <ResponsiveContainer width="100%" height={300}>
@@ -24,12 +24,12 @@ export default function StatusDistributionChart({ data }: StatusDistributionChar
                             cx="50%"
                             cy="50%"
                             labelLine={false}
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                            label={({ name, percent }) => `${name}: ${((percent ?? 0) * 100).toFixed(0)}%`}
                             outerRadius={80}
-                            fill="#8884d8"
+                            fill="#0f62fe"
                             dataKey="value"
                         >
-                            {data.map((entry, index) => (
+                            {data.map((_entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>

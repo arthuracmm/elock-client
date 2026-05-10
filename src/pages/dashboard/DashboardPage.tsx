@@ -63,40 +63,63 @@ export default function DashboardPage() {
                 justifyContent="center"
                 alignItems="center"
                 minHeight="100vh"
-                bgcolor="#f5f5f5"
+                sx={{
+                    background: 'linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%)',
+                }}
             >
-                <CircularProgress />
+                <CircularProgress sx={{ color: '#0f62fe' }} />
             </Box>
         );
     }
 
     return (
-        <Box bgcolor="#f5f5f5" minHeight="100vh" py={4}>
+        <Box
+            minHeight="100vh"
+            py={4}
+            sx={{
+                background: 'linear-gradient(180deg, #f8fbff 0%, #edf5ff 100%)',
+            }}
+        >
             <Container maxWidth="xl">
-                <Box mb={4}>
+                <Box
+                    mb={4}
+                    sx={{
+                        backgroundColor: 'rgba(255,255,255,0.88)',
+                        border: '1px solid #d7e3f5',
+                        borderRadius: 4,
+                        boxShadow: '0 18px 45px rgba(15,35,89,0.08)',
+                        p: { xs: 3, md: 4 },
+                    }}
+                >
                     <Button
                         startIcon={<ArrowBackIcon />}
                         onClick={() => navigate('/')}
-                        sx={{ mb: 2 }}
+                        sx={{
+                            mb: 2,
+                            color: '#0f62fe',
+                            fontWeight: 700,
+                            borderRadius: 3,
+                        }}
                     >
                         Voltar
                     </Button>
-                    <Typography variant="h4" fontWeight="bold" gutterBottom>
+                    <Typography variant="overline" color="#0f62fe" fontWeight="bold">
+                        Métricas em tempo real
+                    </Typography>
+                    <Typography variant="h4" fontWeight="bold" gutterBottom color="#0f172a">
                         Dashboard de Estatísticas
                     </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                        Visualize métricas e análises do sistema de fechaduras
+                    <Typography variant="body1" color="#64748b">
+                        Visualize métricas e análises do sistema de fechaduras.
                     </Typography>
                 </Box>
 
-                {/* KPI Cards */}
                 {overview && (
                     <Box mb={4}>
                         <StatsCards stats={overview} />
                     </Box>
                 )}
 
-                {/* Charts Row 1 */}
                 <Box
                     sx={{
                         display: 'grid',
@@ -109,7 +132,6 @@ export default function DashboardPage() {
                     <StatusDistributionChart data={statusDist} />
                 </Box>
 
-                {/* Charts Row 2 */}
                 <Box
                     sx={{
                         display: 'grid',

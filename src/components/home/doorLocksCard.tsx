@@ -27,10 +27,10 @@ interface DoorLocksCardProps {
 
 export default function DoorLocksCard({ access, onDelete }: DoorLocksCardProps) {
     const isActive = access.doorLock.status === 'ON';
-    const statusColor = isActive ? 'bg-green-500' : 'bg-red-500';
+    const statusColor = isActive ? 'bg-emerald-500' : 'bg-slate-500';
 
     const handleDelete = async (e: React.MouseEvent) => {
-        e.preventDefault(); // Previne navegação do Link
+        e.preventDefault();
         e.stopPropagation();
 
         if (!confirm(`Tem certeza que deseja excluir a fechadura "${access.doorLock.name}"?`)) {
@@ -48,29 +48,27 @@ export default function DoorLocksCard({ access, onDelete }: DoorLocksCardProps) 
     };
 
     return (
-        <Link to={`/door-locks/${access.doorLock.id}`} className="card-styles">
-            <div className="relative bg-white border border-zinc-400 rounded-lg shadow-sm p-6 min-w-[20rem] max-w-[20rem] cursor-pointer">
-                <span className={`absolute top-2 right-2 text-xs text-white px-3 py-1 rounded-full ${statusColor} font-bold`}>
+        <Link to={`/door-locks/${access.doorLock.id}`} className="block">
+            <div className="surface-card relative min-h-56 cursor-pointer rounded-2xl p-6 transition hover:-translate-y-1 hover:shadow-[0_24px_55px_rgba(15,35,89,0.14)]">
+                <span className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-bold text-white ${statusColor}`}>
                     {access.doorLock.status}
                 </span>
 
                 <span
-                    className={`absolute -top-4 -left-4 text-xs text-white p-2 rounded-full
-                    ${access.paper === 'owner' ? 'bg-blue-500'
-                            : access.paper === 'admin' ? 'bg-[var(--primary)]'
-                                : 'bg-yellow-500'}
-                    font-bold`}
+                    className={`absolute -left-3 -top-3 rounded-xl p-2 text-xs font-bold text-white shadow-lg shadow-blue-500/20
+                    ${access.paper === 'owner' ? 'bg-[var(--primary)]'
+                            : access.paper === 'admin' ? 'bg-[var(--primary-dark)]'
+                                : 'bg-amber-500'}`}
                 >
                     {access.paper === 'owner' ? <LocalPoliceIcon fontSize='small' />
                         : access.paper === 'admin' ? <AdminPanelSettingsIcon fontSize='small' />
                             : <KeyIcon fontSize='small' />}
                 </span>
 
-                {/* Botão de deletar (apenas para owners) */}
                 {access.paper === 'owner' && onDelete && (
                     <button
                         onClick={handleDelete}
-                        className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full transition"
+                        className="absolute left-4 top-4 rounded-full bg-red-500 p-1.5 text-white transition hover:bg-red-600"
                         title="Excluir fechadura"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -79,26 +77,25 @@ export default function DoorLocksCard({ access, onDelete }: DoorLocksCardProps) 
                     </button>
                 )}
 
-                <div className="flex items-center gap-2 text-zinc-600 mb-1">
+                <div className="mb-3 mt-6 flex items-center gap-2 text-[var(--primary)]">
                     <FmdGoodIcon fontSize="small" />
-                    <span className="font-semibold">{access.doorLock.localization}</span>
+                    <span className="text-sm font-semibold">{access.doorLock.localization}</span>
                 </div>
 
-                <h2 className="text-lg font-bold text-zinc-800 mb-2">
+                <h2 className="mb-4 text-xl font-bold text-[var(--text-color)]">
                     {access.doorLock.name}
-                    <span className="text-sm text-zinc-400 ml-2">/ Nome</span>
                 </h2>
 
-                <div className="text-sm text-zinc-700 space-y-1">
-                    <p><strong>Status do acesso:</strong> {isActive ? 'Aberta' : 'Trancada'}</p>
+                <div className="space-y-2 text-sm text-[var(--muted-text)]">
+                    <p><strong className="text-slate-700">Status do acesso:</strong> {isActive ? 'Aberta' : 'Trancada'}</p>
                     {access.startsAt && (
-                        <p><strong>Início:</strong> {new Date(access.startsAt).toLocaleString()}</p>
+                        <p><strong className="text-slate-700">Início:</strong> {new Date(access.startsAt).toLocaleString()}</p>
                     )}
                     {access.expiresAt && (
-                        <p><strong>Expira em:</strong> {new Date(access.expiresAt).toLocaleString()}</p>
+                        <p><strong className="text-slate-700">Expira em:</strong> {new Date(access.expiresAt).toLocaleString()}</p>
                     )}
                     {access.sharedByUser && (
-                        <p className='truncate'><strong>Compartilhado por:</strong> {access.sharedByUser.name}</p>
+                        <p className='truncate'><strong className="text-slate-700">Compartilhado por:</strong> {access.sharedByUser.name}</p>
                     )}
                 </div>
             </div>

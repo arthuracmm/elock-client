@@ -34,15 +34,15 @@ export default function RecentActivityTable({ data }: RecentActivityTableProps) 
     };
 
     return (
-        <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+        <Card sx={{ border: '1px solid #d7e3f5', boxShadow: '0 18px 45px rgba(15,35,89,0.08)', borderRadius: 4 }}>
             <CardContent>
-                <Typography variant="h6" gutterBottom fontWeight="bold">
+                <Typography variant="h6" gutterBottom fontWeight="bold" color="#0f172a">
                     Atividades Recentes
                 </Typography>
                 <TableContainer>
                     <Table>
                         <TableHead>
-                            <TableRow>
+                            <TableRow sx={{ '& th': { color: '#475569', borderBottomColor: '#d7e3f5' } }}>
                                 <TableCell><strong>Fechadura</strong></TableCell>
                                 <TableCell><strong>Ação</strong></TableCell>
                                 <TableCell><strong>Usuário</strong></TableCell>
@@ -51,13 +51,17 @@ export default function RecentActivityTable({ data }: RecentActivityTableProps) 
                         </TableHead>
                         <TableBody>
                             {data.map((activity) => (
-                                <TableRow key={activity.id} hover>
+                                <TableRow key={activity.id} hover sx={{ '& td': { borderBottomColor: '#eef4ff' } }}>
                                     <TableCell>{activity.lockName}</TableCell>
                                     <TableCell>
                                         <Chip
                                             label={activity.action}
-                                            color={activity.action === 'OPEN' ? 'success' : 'error'}
                                             size="small"
+                                            sx={{
+                                                backgroundColor: activity.action === 'OPEN' ? '#dbeafe' : '#f1f5f9',
+                                                color: activity.action === 'OPEN' ? '#0f62fe' : '#475569',
+                                                fontWeight: 700,
+                                            }}
                                         />
                                     </TableCell>
                                     <TableCell>{activity.user}</TableCell>
