@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import elockText from '/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import Modal from '@mui/material/Modal';
 import Divider from '@mui/material/Divider';
 import { useAuth } from '../../contexts/AuthContext';
