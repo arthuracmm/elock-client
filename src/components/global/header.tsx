@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import elockText from '/images/elock-texto.png'
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import Modal from '@mui/material/Modal';
 import Divider from '@mui/material/Divider';
 import { useAuth } from '../../contexts/AuthContext';
@@ -46,7 +47,7 @@ export default function Header({ setLoginModalOpen, itemSelected, setItemSelecte
                 alt="elock-logo"
                 width={150}
                 onClick={() => { navigate('/') }}
-                className='cursor-pointer'
+                className="cursor-pointer"
             />
 
             <div className="hidden items-center gap-3 rounded-full bg-[var(--accent-light)] px-3 py-2 text-sm text-slate-700 md:flex">
