@@ -1,60 +1,83 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import elockText from '/images/elock-texto.png'
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import Modal from '@mui/material/Modal';
-import lockinLogo from '/images/lockin-logo.svg';
+import Divider from '@mui/material/Divider';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface HeaderProps {
     setLoginModalOpen: (open: boolean) => void;
-    isLoggedIn: boolean;
-    onLogout: () => void;
+    itemSelected?: string;
+    setItemSelected?: (item: string) => void;
 }
 
-export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: HeaderProps) {
+export default function Header({ setLoginModalOpen, itemSelected, setItemSelected }: HeaderProps) {
     const navigate = useNavigate();
-    const [userName, setUserName] = useState<string | null>(null);
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+    const { user, isLoggedIn, logout } = useAuth();
 
-    useEffect(() => {
-        if (!isLoggedIn) {
-            setUserName(null);
-            return;
+    const menuItems = [
+        {
+            name: 'Home',
+        },
+        {
+            name: 'Fechaduras',
+        },
+        {
+            name: 'Dashboard',
         }
+    ]
 
-        const userDataString = localStorage.getItem('userData');
-
-        if (!userDataString) {
-            return;
+    const handleMenuClick = (itemName: string) => {
+        setItemSelected?.(itemName);
+        if (itemName === 'Dashboard') {
+            navigate('/dashboard');
+        } else {
+            navigate('/');
         }
-
-        try {
-            const userData = JSON.parse(userDataString) as { name?: string };
-            const firstName = userData.name?.split(' ')[0] ?? null;
-            setUserName(firstName);
-        } catch (error) {
-            console.error('Erro ao analisar userData:', error);
-            setUserName(null);
-        }
-    }, [isLoggedIn]);
+    };
 
     return (
-        <div className="flex justify-between p-5 px-12 bg-[var(--surface)]/95 items-center absolute right-10 top-4 w-[calc(100vw-5rem)] rounded-full font-semibold shadow-lg shadow-yellow-950/20 border border-[var(--border)]">
+        <div className="surface-card fixed left-4 right-4 top-4 z-40 flex items-center justify-between rounded-2xl px-5 py-4 font-semibold md:left-10 md:right-10 md:px-10" >
             <img
-                src={lockinLogo}
-                alt="lockin-logo"
-                width={170}
+                src={elockText}
+                alt="elock-logo"
+                width={150}
                 onClick={() => { navigate('/') }}
                 className="cursor-pointer"
             />
-            {userName ? (
-                <div className="flex gap-4">
-                    <div className="flex text-lg items-center gap-1 cursor-pointer bg-[var(--accent)] text-[var(--primary-dark)] hover:bg-[var(--primary-light)] hover:text-white px-5 py-2 transition-colors rounded-full">
-                        <p>Ola, <span className="font-bold">{userName}</span></p>
+
+            <div className="hidden items-center gap-3 rounded-full bg-[var(--accent-light)] px-3 py-2 text-sm text-slate-700 md:flex">
+                {menuItems.map((item, index) => (
+                    <div key={index} className="flex items-center gap-3" onClick={() => handleMenuClick(item.name)}>
+                        <div className="flex flex-col items-center">
+                            <p className={`cursor-pointer rounded-full px-4 py-2 transition-colors ${itemSelected === item.name
+                                ? 'bg-[var(--primary)] text-white shadow-sm shadow-blue-500/20'
+                                : 'hover:bg-white hover:text-[var(--primary)]'
+                                }`}>{item.name}</p>
+                            {itemSelected === item.name && (
+                                <div className="mt-1 h-1 w-1 rounded-full bg-[var(--primary-light)]" />
+                            )}
+                        </div>
+
+                        {index !== menuItems.length - 1 && <Divider orientation="vertical" flexItem />}
+                    </div>
+                ))}
+            </div>
+
+            {isLoggedIn && user ? (
+                <div className="flex items-center gap-3">
+                    <div
+                        className="flex cursor-pointer items-center gap-1 rounded-full bg-[var(--accent)] px-4 py-2 text-sm text-[var(--primary-darker)] transition-colors hover:bg-[var(--accent-hover)] md:text-base"
+                    >
+                        <p>Olá, <span className="font-bold">{user.name.split(" ")[0]}</span></p>
                     </div>
                     <button
                         onClick={() => setLogoutModalOpen(true)}
-                        className="cursor-pointer text-[var(--secondary)] hover:text-[var(--primary)] transition-colors duration-300"
+                        className='cursor-pointer rounded-full p-2 text-slate-500 transition-colors duration-300 hover:bg-red-50 hover:text-red-700'
                     >
                         <ExitToAppIcon />
                     </button>
@@ -63,22 +86,21 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                         onClose={() => setLogoutModalOpen(false)}
                         className="flex items-center justify-center"
                     >
-                        <div className="bg-[var(--surface)] rounded-lg shadow-xl shadow-yellow-950/25 border border-[var(--border)] p-8 w-full max-w-sm text-center flex flex-col items-center gap-6">
-                            <h2 className="text-xl font-semibold text-[var(--primary-dark)]">Tem certeza que deseja sair da conta?</h2>
+                        <div className="surface-card flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl p-8 text-center">
+                            <h2 className="text-xl font-semibold">Tem certeza que deseja sair da conta?</h2>
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => {
-                                        onLogout();
-                                        setUserName(null);
+                                        logout();
                                         setLogoutModalOpen(false);
                                     }}
-                                    className="bg-[var(--primary)] text-white px-4 py-2 rounded hover:bg-[var(--primary-dark)] transition-colors"
+                                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer"
                                 >
                                     Sim, sair
                                 </button>
                                 <button
                                     onClick={() => setLogoutModalOpen(false)}
-                                    className="bg-[var(--accent)] text-[var(--secondary-dark)] px-4 py-2 rounded hover:bg-[var(--secondary-light)] hover:text-white transition-colors"
+                                    className="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400 transition-colors cursor-pointer"
                                 >
                                     Cancelar
                                 </button>
@@ -88,7 +110,7 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                 </div>
             ) : (
                 <button
-                    className="flex text-lg items-center gap-2 cursor-pointer text-[var(--primary-dark)] hover:bg-[var(--accent)] hover:text-[var(--secondary-dark)] px-5 py-2 transition-colors rounded-full"
+                    className="flex cursor-pointer items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 text-sm text-white shadow-sm shadow-blue-500/30 transition-colors hover:bg-[var(--primary-dark)] md:text-base"
                     onClick={() => setLoginModalOpen(true)}
                 >
                     <PersonOutlineOutlinedIcon />
@@ -96,5 +118,5 @@ export default function Header({ setLoginModalOpen, isLoggedIn, onLogout }: Head
                 </button>
             )}
         </div>
-    );
+    )
 }
